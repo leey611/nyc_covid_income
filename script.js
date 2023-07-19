@@ -131,7 +131,7 @@ async function makeChart() {
     const y0 = d3.scaleLinear().range([height, 0]);
     const y1 = d3.scaleLinear().range([height, 0]);
 
-    const color = d3.scaleOrdinal().range(["#98abc5", "#d0743c"]);
+    const color = d3.scaleOrdinal().range([orange, incomeColor]);
 
     const xAxis = d3.axisBottom(x0).ticks(5);
     const yAxisLeft = d3.axisLeft(y0)//.tickFormat((d) => parseInt(d));
@@ -187,10 +187,10 @@ async function makeChart() {
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .style("fill", "#98abc5")
+        .style("fill", orange)
         .text("Deaths");
 
-    svg.select(".y0.axis").selectAll(".tick").style("fill", "#98abc5");
+    svg.select(".y0.axis").selectAll(".tick").style("fill", orange);
 
     svg.append("g")
         .attr("class", "y1 axis")
@@ -201,10 +201,10 @@ async function makeChart() {
         .attr("y", -16)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .style("fill", "#d0743c")
+        .style("fill", incomeColor)
         .text("Income");
 
-    svg.select(".y1.axis").selectAll(".tick").style("fill", "#d0743c");
+    svg.select(".y1.axis").selectAll(".tick").style("fill", orange);
 
     const graph = svg.selectAll(".date").data(sortedDataset).enter().append("g").attr("class", "g").attr("transform", (d) => `translate(${x0(d.zipcode)},0)`);
 
