@@ -131,7 +131,7 @@ async function makeChart() {
     const y0 = d3.scaleLinear().range([height, 0]);
     const y1 = d3.scaleLinear().range([height, 0]);
 
-    const color = d3.scaleOrdinal().range([orange, incomeColor]);
+    const color = d3.scaleOrdinal().range([incomeColor, orange]);
 
     const xAxis = d3.axisBottom(x0).ticks(5);
     const yAxisLeft = d3.axisLeft(y0)//.tickFormat((d) => parseInt(d));
@@ -164,7 +164,7 @@ async function makeChart() {
     //console.log('max case', d3.max(dataset, (d) => d.values[0].value))
     y1.domain([0, d3.max(sortedDataset, (d) => d.values[1].value)]);
     //console.log('max income', d3.max(dataset, (d) => d.values[1].value))
-
+    let deathColorScale = d3.scaleLinear().domain([0, d3.max(sortedDataset, (d) => d.values[0].value)]).range([LIGHT_COLOR, INTENSE_COLOR])
     // for(let item of dataset) {
     //     console.log('income',item.values[1].value)
     //     console.log('y0',y0(item.values[1].value))
@@ -222,7 +222,9 @@ async function makeChart() {
          //.attr("y", (d) => y0(d.value))
         //.attr("height", (d) => height - y0(d.value))
         .attr("height", (d) => d.name==='Deaths' ? height - y0(d.value) : height - y1(d.value))
-        .style("fill", (d) => color(d.name));
+         //.style("fill", (d) => color(d.name));
+        //.style("fill", (d) => deathColorScale(d.value));
+        .style("fill", (d) => d.name === 'Income' ? color(d.name) : deathColorScale(d.value));
 
     const legend = svg.selectAll(".legend").data(["Deaths", "Income"]).enter().append("g").attr("class", "legend").attr("transform", (d, i) => `translate(0,${i * 20})`);
 

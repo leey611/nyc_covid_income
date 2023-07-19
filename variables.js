@@ -14,3 +14,5 @@ const staten_island_zipcode = `${BASE_URL}${STATEN_ISLAND}/c_meta.json`
 
 const incomeColor = '#949494'
 const orange = '#d0743c'
+const INTENSE_COLOR = '#AA2222'
+const LIGHT_COLOR = '#ECD15B'
