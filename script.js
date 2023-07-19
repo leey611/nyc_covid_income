@@ -122,10 +122,10 @@ async function makeChart() {
 
     const containerWidth = 1000; 
     const margin = { top: 20, right: 40, bottom: 30, left: 40 };
-    const width = 3580 - margin.left - margin.right;
+    const width = 3680 - margin.left - margin.right;
     const height = 900 - margin.top - margin.bottom;
 
-    const x0 = d3.scaleBand().range([0, width]).paddingInner(0.4);
+    const x0 = d3.scaleBand().range([0, width]).paddingOuter(0.5).paddingInner(0.3);//d3.scaleBand().range([0, width]).paddingInner(0.4);
     const x1 = d3.scaleBand();
 
     const y0 = d3.scaleLinear().range([height, 0]);
