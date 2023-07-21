@@ -206,7 +206,7 @@ async function makeChart() {
 
     svg.select(".y1.axis").selectAll(".tick").style("fill", orange);
 
-    const graph = svg.selectAll(".date").data(sortedDataset).enter().append("g").attr("class", "g").attr("transform", (d) => `translate(${x0(d.zipcode)},0)`);
+    const graph = svg.selectAll(".date").data(sortedDataset).enter().append("g").attr("class", "g zipcodeBars").attr("transform", (d) => `translate(${x0(d.zipcode)},0)`);
 
     graph.selectAll("rect")
         .data((d) => d.values)
@@ -243,8 +243,43 @@ async function makeChart() {
         .style("text-anchor", "end")
         .text((d) => d);
 
-
-
-
+    scrollToHighlightBars()
     //console.log('income', incomeJson)
+}
+function getDocWidth() {
+    var D = document;
+    return Math.max(
+        D.body.scrollWidth, D.documentElement.scrollWidth,
+        D.body.offsetWidth, D.documentElement.offsetWidth,
+        D.body.clientWidth, D.documentElement.clientWidth
+    )
+}
+
+function amountscrolled(){
+    var winwidth= window.innerWidth || (document.documentElement || document.body).clientWidth
+    var docwidth = getDocWidth()
+    var scrollLeft = window.pageXOffset || (document.documentElement || document.body.parentNode || document.body).scrollLeft
+    var trackLength = docwidth - winwidth
+    var pctScrolled = scrollLeft/trackLength // gets percentage scrolled (ie: 80 or NaN if tracklength == 0)
+    //console.log(pctScrolled)
+    return pctScrolled
+}
+
+function scrollToHighlightBars() {
+    window.addEventListener("scroll", function(){
+        const pctScrolled = amountscrolled()
+        const counts = d3.selectAll('.zipcodeBars').size()
+        const index =  Math.floor(counts * pctScrolled)
+        //console.log(index)
+        d3.selectAll('.zipcodeBars')
+            .transition()
+            .ease(d3.easeElastic.period(0.4))
+            //.style('opacity', (d, i) => i === index ? 1: 0.1)
+            .style('stroke', (d, i) => i === index ? 'purple' : null)
+            .style('stroke-width', (d, i) => i === index ? 2 : 1)
+                
+        
+        //console.log(pctScrolled)
+        //console.log(d3.selectAll('.zipcodeBars').size())
+    }, false)
 }
