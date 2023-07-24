@@ -82,14 +82,14 @@ async function getNewYorkData(url, target_date) {
     // console.log('maxLengendRaw', maxLegendRaw)
 
     // if (raw_or_per100k.value === 'per100k') {
-    //     for (let item of zipcode_cases) {
-    //         let zip = item.c_ref
-    //         let popluation = zipcode_population[zip]
-    //         //console.log('item', item)
-    //         //console.log('before',item.totals[METRIC])
-    //         item.totals[METRIC] = item.totals[METRIC] * (100000/popluation)
-    //         //console.log('after',item.totals[METRIC])
-    //     }
+    for (let item of zipcode_cases) {
+        let zip = item.c_ref
+        let popluation = zipcode_population[zip]
+        //console.log('item', item)
+        //console.log('before',item.totals[METRIC])
+        item.totals[METRIC] = item.totals[METRIC] * (100000/popluation)
+        //console.log('after',item.totals[METRIC])
+    }
     // }
 
     // load income
@@ -148,6 +148,7 @@ async function makeChart() {
     
     const dataset = res.map((item, i) => ({
         zipcode: item.c_ref,
+        zipcodeName: item.name,
         values: [
             { name: "Deaths", value: item.totals.Deaths },
             { name: "Income", value: item.income },
@@ -206,7 +207,11 @@ async function makeChart() {
 
     svg.select(".y1.axis").selectAll(".tick").style("fill", orange);
 
-    const graph = svg.selectAll(".date").data(sortedDataset).enter().append("g").attr("class", "g zipcodeBars").attr("transform", (d) => `translate(${x0(d.zipcode)},0)`);
+    const graph = svg.selectAll(".date").data(sortedDataset).enter().append("g")
+        .attr("class", "g zipcodeBars")
+        .attr('data-deaths', d => d.values[0].value)
+        .attr('data-income', d => d.values[1].value)
+        .attr("transform", (d) => `translate(${x0(d.zipcode)},0)`);
 
     graph.selectAll("rect")
         .data((d) => d.values)
@@ -242,7 +247,13 @@ async function makeChart() {
         .attr("dy", ".35em")
         .style("text-anchor", "end")
         .text((d) => d);
-
+    
+    updateCallout(
+        sortedDataset[0].zipcode,
+        sortedDataset[0].zipcodeName,
+        sortedDataset[0].values[0].value,
+        sortedDataset[0].values[1].value,
+    )
     scrollToHighlightBars()
     //console.log('income', incomeJson)
 }
@@ -270,7 +281,13 @@ function scrollToHighlightBars() {
         const pctScrolled = amountscrolled()
         const counts = d3.selectAll('.zipcodeBars').size()
         const index =  Math.floor(counts * pctScrolled)
-        //console.log(index)
+        const zipcodeBars = d3.selectAll('.zipcodeBars')
+        const currentBars = zipcodeBars.filter((d, i) => i === index)
+        const currentBarsData = currentBars.datum()
+        const { zipcode, zipcodeName } = currentBarsData
+        const deaths = currentBarsData.values[0].value
+        const income = currentBarsData.values[1].value
+        
         d3.selectAll('.zipcodeBars')
             .transition()
             .ease(d3.easeElastic.period(0.4))
@@ -278,8 +295,29 @@ function scrollToHighlightBars() {
             .style('stroke', (d, i) => i === index ? 'purple' : null)
             .style('stroke-width', (d, i) => i === index ? 2 : 1)
                 
-        
-        //console.log(pctScrolled)
-        //console.log(d3.selectAll('.zipcodeBars').size())
+        updateCallout(zipcode, zipcodeName, deaths, income)
+            
     }, false)
+}
+
+function updateCallout(zipcode, zipcodeName, deaths, income) {
+    let calloutSvg = d3.selectAll('.callout svg')
+        calloutSvg
+            .selectAll('*')
+            .remove()
+        calloutSvg
+            .append('text')
+            .text(`${zipcode} ${zipcodeName}`)
+            .attr("x", 20)
+	        .attr("y", 20)
+        calloutSvg
+            .append('text')
+            .text(`Deaths ${deaths}`)
+            .attr("x", 20)
+	        .attr("y", 40)
+        calloutSvg
+            .append('text')
+            .text(`Income ${income}`)
+            .attr("x", 20)
+	        .attr("y", 60)
 }

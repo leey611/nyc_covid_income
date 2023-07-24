@@ -1,0 +1,5 @@
+.callout {
+    position: fixed;
+    transform: translate(-50%, 0);
+    left: 50vw;
+}
