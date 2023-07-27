@@ -312,12 +312,12 @@ function updateCallout(zipcode, zipcodeName, deaths, income) {
 	        .attr("y", 20)
         calloutSvg
             .append('text')
-            .text(`Deaths ${deaths}`)
+            .text(`Deaths per 100K: ${deaths.toLocaleString()}`)
             .attr("x", 20)
 	        .attr("y", 40)
         calloutSvg
             .append('text')
-            .text(`Income ${income}`)
+            .text(`Income: ${income}`)
             .attr("x", 20)
 	        .attr("y", 60)
 }
