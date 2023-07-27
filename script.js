@@ -253,8 +253,9 @@ async function makeChart() {
         sortedDataset[0].zipcodeName,
         sortedDataset[0].values[0].value,
         sortedDataset[0].values[1].value,
+        deathColorScale
     )
-    scrollToHighlightBars()
+    scrollToHighlightBars(deathColorScale)
     //console.log('income', incomeJson)
 }
 function getDocWidth() {
@@ -276,7 +277,7 @@ function amountscrolled(){
     return pctScrolled
 }
 
-function scrollToHighlightBars() {
+function scrollToHighlightBars(deathColorScale) {
     window.addEventListener("scroll", function(){
         const pctScrolled = amountscrolled()
         const counts = d3.selectAll('.zipcodeBars').size()
@@ -295,12 +296,12 @@ function scrollToHighlightBars() {
             .style('stroke', (d, i) => i === index ? 'purple' : null)
             .style('stroke-width', (d, i) => i === index ? 2 : 1)
                 
-        updateCallout(zipcode, zipcodeName, deaths, income)
+        updateCallout(zipcode, zipcodeName, deaths, income, deathColorScale)
             
     }, false)
 }
 
-function updateCallout(zipcode, zipcodeName, deaths, income) {
+function updateCallout(zipcode, zipcodeName, deaths, income, deathColorScale) {
     let calloutSvg = d3.selectAll('.callout svg')
         calloutSvg
             .selectAll('*')
@@ -310,14 +311,34 @@ function updateCallout(zipcode, zipcodeName, deaths, income) {
             .text(`${zipcode} ${zipcodeName}`)
             .attr("x", 20)
 	        .attr("y", 20)
+            .attr('font-size', 18)
+            .attr('dominant-baseline', 'hanging')
         calloutSvg
             .append('text')
             .text(`Deaths per 100K: ${deaths.toLocaleString()}`)
-            .attr("x", 20)
+            .attr("x", 40)
 	        .attr("y", 40)
+            .attr('font-size', 18)
+            .attr('dominant-baseline', 'hanging')
         calloutSvg
             .append('text')
             .text(`Income: ${income}`)
-            .attr("x", 20)
+            .attr("x", 40)
 	        .attr("y", 60)
+            .attr('font-size', 18)
+            .attr('dominant-baseline', 'hanging')
+        calloutSvg
+            .append('rect')
+            .attr('x', 20)
+            .attr('y', 40)
+            .attr('width', 16)
+            .attr('height', 16)
+            .attr('fill', () => deathColorScale(deaths))
+        calloutSvg
+            .append('rect')
+            .attr('x', 20)
+            .attr('y', 60)
+            .attr('width', 16)
+            .attr('height', 16)
+            .attr('fill', incomeColor)
 }
