@@ -1,6 +1,6 @@
 .callout {
     position: fixed;
-    transform: translate(-50%, 0);
+    /* transform: translate(-50%, 0);
     left: 50vw;
-    top: 200px;
+    top: 200px; */
 }

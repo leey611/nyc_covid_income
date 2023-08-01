@@ -230,15 +230,18 @@ async function makeChart() {
          //.style("fill", (d) => color(d.name));
         //.style("fill", (d) => deathColorScale(d.value));
         .style("fill", (d) => d.name === 'Income' ? color(d.name) : deathColorScale(d.value));
-
     
+    //zipcode, zipcodeName, deaths, income, deathColorScale, currentBarsPos, pctScrolled
     updateCallout(
         sortedDataset[0].zipcode,
         sortedDataset[0].zipcodeName,
         sortedDataset[0].values[0].value,
         sortedDataset[0].values[1].value,
-        deathColorScale
+        deathColorScale,
+        d3.selectAll('.zipcodeBars').nodes()[0].getBoundingClientRect().x,
+        0
     )
+    
     scrollToHighlightBars(deathColorScale)
     //console.log('income', incomeJson)
 }
@@ -264,10 +267,14 @@ function amountscrolled(){
 function scrollToHighlightBars(deathColorScale) {
     window.addEventListener("scroll", function(){
         const pctScrolled = amountscrolled()
+        console.log('pct scroll', pctScrolled)
         const counts = d3.selectAll('.zipcodeBars').size()
         const index =  Math.floor(counts * pctScrolled)
         const zipcodeBars = d3.selectAll('.zipcodeBars')
         const currentBars = zipcodeBars.filter((d, i) => i === index)
+
+        if (!currentBars.node()) return
+        const currentBarsPos = currentBars.node().getBoundingClientRect().left
         const currentBarsData = currentBars.datum()
         const { zipcode, zipcodeName } = currentBarsData
         const deaths = currentBarsData.values[0].value
@@ -280,13 +287,14 @@ function scrollToHighlightBars(deathColorScale) {
             .style('stroke', (d, i) => i === index ? '#42c2f5' : null)
             .style('stroke-width', (d, i) => i === index ? 2 : 1)
                 
-        updateCallout(zipcode, zipcodeName, deaths, income, deathColorScale)
+        updateCallout(zipcode, zipcodeName, deaths, income, deathColorScale, currentBarsPos, pctScrolled)
             
     }, false)
 }
 
-function updateCallout(zipcode, zipcodeName, deaths, income, deathColorScale) {
+function updateCallout(zipcode, zipcodeName, deaths, income, deathColorScale, currentBarsPos, pctScrolled) {
     let calloutSvg = d3.selectAll('.callout svg')
+    let calloutDiv = d3.selectAll('.callout')
         calloutSvg
             .selectAll('*')
             .remove()
@@ -331,4 +339,14 @@ function updateCallout(zipcode, zipcodeName, deaths, income, deathColorScale) {
             .attr('width', 16)
             .attr('height', 16)
             .attr('fill', incomeColor)
+            
+        if (pctScrolled < 0.8) {
+            calloutDiv
+                .style('left', `${currentBarsPos}px`)
+        } else {
+            calloutDiv
+                .style('left', 'auto')
+                .style('right', 0)
+        }
+        
 }
