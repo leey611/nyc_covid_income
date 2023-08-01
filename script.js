@@ -315,14 +315,20 @@ function updateCallout(zipcode, zipcodeName, deaths, income, deathColorScale) {
             .attr('dominant-baseline', 'hanging')
         calloutSvg
             .append('text')
-            .text(`Deaths per 100K: ${deaths.toLocaleString()}`)
+            .text(`Deaths per 100K: ${deaths.toLocaleString("en", {   
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+            })}`)
             .attr("x", 40)
 	        .attr("y", 40)
             .attr('font-size', 18)
             .attr('dominant-baseline', 'hanging')
         calloutSvg
             .append('text')
-            .text(`Income: ${income}`)
+            .text(`Income: $${income.toLocaleString("en", {   
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+            })}`)
             .attr("x", 40)
 	        .attr("y", 60)
             .attr('font-size', 18)
