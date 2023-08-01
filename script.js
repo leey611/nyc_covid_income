@@ -231,22 +231,6 @@ async function makeChart() {
         //.style("fill", (d) => deathColorScale(d.value));
         .style("fill", (d) => d.name === 'Income' ? color(d.name) : deathColorScale(d.value));
 
-    const legend = svg.selectAll(".legend").data(["Deaths", "Income"]).enter().append("g").attr("class", "legend").attr("transform", (d, i) => `translate(0,${i * 20})`);
-
-    legend
-        .append("rect")
-        .attr("x", width - 48)
-        .attr("width", 18)
-        .attr("height", 18)
-        .style("fill", color);
-
-    legend
-        .append("text")
-        .attr("x", width - 54)
-        .attr("y", 9)
-        .attr("dy", ".35em")
-        .style("text-anchor", "end")
-        .text((d) => d);
     
     updateCallout(
         sortedDataset[0].zipcode,
