@@ -290,10 +290,10 @@ function scrollToHighlightBars(deathColorScale) {
         const income = currentBarsData.values[1].value
         
         d3.selectAll('.zipcodeBars')
-            .transition()
-            .ease(d3.easeElastic.period(0.4))
+            //.transition()
+            //.ease(d3.easeElastic.period(0.1))
             //.style('opacity', (d, i) => i === index ? 1: 0.1)
-            .style('stroke', (d, i) => i === index ? 'purple' : null)
+            .style('stroke', (d, i) => i === index ? '#42c2f5' : null)
             .style('stroke-width', (d, i) => i === index ? 2 : 1)
                 
         updateCallout(zipcode, zipcodeName, deaths, income, deathColorScale)
